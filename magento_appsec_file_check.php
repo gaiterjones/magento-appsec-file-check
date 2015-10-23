@@ -2,8 +2,12 @@
 
 // PATH TO MAGENTO ROOT
 //
-$_magentoPath='/home/www/ecommerce/shop01/magento/';
+$_magentoPath='/home/www/magento/';
 
+if (!file_exists($_magentoPath. 'Mage.php')) {
+	echo 'Magento not found!'. "\n";
+	exit;
+}
 
 // SECURITY NOTICES AND QUERIES
 //
@@ -29,6 +33,8 @@ $_securityNotices=array(
 		'magentopath' => $_magentoPath)		
 );
 
+// EXEC
+//
 echo '*** Magento security file check ***'. "\n";
 $_count=1;
 
