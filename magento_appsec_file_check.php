@@ -4,7 +4,7 @@
 //
 $_magentoPath='/home/www/magento/';
 
-if (!file_exists($_magentoPath. 'Mage.php')) {
+if (!file_exists($_magentoPath. 'app/Mage.php')) {
 	echo 'Magento not found!'. "\n";
 	exit;
 }
