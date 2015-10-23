@@ -13,30 +13,47 @@ if (!file_exists($_magentoPath. 'app/Mage.php')) {
 //
 $_securityNotices=array(
 	'APPSEC-1034, addressing bypassing custom admin URL' => array(
-		'grep' => array(
-			'grep -irl "<use>admin</use>"'. ' '. $_magentoPath. 'app/code/*'
+		'text' => '',
+		'exec' => array(
+			'path' => array(
+					$_magentoPath. 'app/code/*'
+				),
+			'cmd' => 'grep -irl ' ,
+			'query' => array(
+				'"<use>admin</use>"'
+				)
 		),
 		'magentopath' => $_magentoPath),
 	'APPSEC-1063, addressing possible SQL injection' => array(
-		'grep' => array(
-			'grep -irl "collection->addFieldToFilter(\'"'. ' '. $_magentoPath. 'app/code/community/*',
-			'grep -irl "collection->addFieldToFilter(\'"'. ' '. $_magentoPath. 'app/code/local/*',
-			'grep -irl "collection->addFieldToFilter(\'\`"'. ' '. $_magentoPath. 'app/code/community/*',
-			'grep -irl "collection->addFieldToFilter(\'\`"'. ' '. $_magentoPath. 'app/code/local/*'			
+		'text' => '',
+		'exec' => array(
+			'path' => array(
+					$_magentoPath. 'app/code/community/*',
+					$_magentoPath. 'app/code/local/*'
+				),
+			'cmd' => 'grep -irl ' ,
+			'query' => array(
+				'"collection->addFieldToFilter(\'"',
+				'"collection->addFieldToFilter(\'\`"',
+			)
 		),
 		'magentopath' => $_magentoPath),
 	'APPSEC-1057, template processing method allows access to private information' => array(
-		'grep' => array(
-			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/code/community/*',
-			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/code/local/*',
-			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/locale/*',
-			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/design/frontend/*',
-			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/code/community/*',
-			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/code/local/*',
-			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/locale/*',
-			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/design/frontend/*'
+		'text' => '',
+		'exec' => array(
+			'path' => array(
+					$_magentoPath. 'app/code/community/*',
+					$_magentoPath. 'app/code/local/*',
+					$_magentoPath. 'app/locale/*',
+					$_magentoPath. 'app/design/frontend/*'
+				),
+			'cmd' => 'grep -irl ' ,
+			'query' => array(
+				'"{{config path="',
+				'"{{block type="',
+			)
 		),
-		'magentopath' => $_magentoPath)		
+		'magentopath' => $_magentoPath)			
 );
 
 // EXEC
@@ -59,37 +76,43 @@ exit;
 function doExec($_securityNotice)
 {
 	$_text='';	
+	$_exec=$_securityNotice['exec']['cmd'];	
 	
-	foreach ($_securityNotice['grep'] as $_grep)
+	foreach ($_securityNotice['exec']['path'] as $_searchPath)
 	{
-		$_exec=$_grep;
+		
 		$_count=0;
 		$_search='';
-		
-		exec($_exec, $_output, $_status);
-		preg_match('/"([^"]+)"/', $_grep, $_query);
-		
-		if (1 === $_status)
-		{
 			
-			$_text=$_text.$_query[1]. ' not found.'. "\n";
-			continue;
-		}
+		foreach ($_securityNotice['exec']['query'] as $_searchQuery)
+		{
 
-		if (0 === $_status)
-		{
-			$_count=count($_output);
+			$_text=$_text.'looking in '. $_searchPath. ' for '. $_searchQuery. "\n";
+		
+			exec($_exec. $_searchQuery. ' '. $_searchPath, $_output, $_status);
 			
-			foreach ($_output as $_line)
+			if (1 === $_status)
 			{
-				$_search=$_search.$_query[1]. ' found in '. str_replace($_securityNotice['magentopath'],' ', $_line). "\n";
+				
+				$_text=$_text.$_searchQuery. ' not found.'. "\n";
+				continue;
+			}
+
+			if (0 === $_status)
+			{
+				$_count=count($_output);
+				
+				foreach ($_output as $_line)
+				{
+					$_search=$_search.$_searchQuery. ' found in '. str_replace($_securityNotice['magentopath'],' ', $_line). "\n";
+				}
+				
+			} else {
+				$_text=$_text. 'Command '. $_securityNotice['exec']['cmd']. ' failed with status: ' . $_status. "\n";
 			}
 			
-		} else {
-			$_text=$_text. 'Command '. $_grep. ' failed with status: ' . $_status. "\n";
+			$_text=$_text.$_count. ' effected files : '. "\n". $_search. "\n";
 		}
-		
-		$_text=$_text.$_count. ' effected files : '. "\n". $_search;
 	}
 	
 	return $_text;
