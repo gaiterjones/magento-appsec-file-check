@@ -9,7 +9,7 @@ if (!file_exists($_magentoPath. 'app/Mage.php')) {
 	exit;
 }
 
-// SECURITY NOTICES AND QUERIES
+// SECURITY PATCHES and APPSECS
 //
 $_securityPatches=array(
 	'SUPEE-6788' => array
