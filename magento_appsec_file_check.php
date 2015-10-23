@@ -129,7 +129,7 @@ function doExec($_securityNotice,$_appsec)
 			
 		}
 		
-		$_text=$_text.($_count > 0 ? "\033[1;31m". $_count. "\033[0m". ' affected files : ' :  "\033[1;32m". $_count. 'affected files.'. "\033[1;31m"). "\n". $_search. "\n";
+		$_text=$_text.($_count > 0 ? "\033[1;31m". $_count. "\033[0m". ' affected files : ' :  "\033[1;32m". $_count. ' affected files.'. "\033[0m"). "\n". $_search. "\n";
 	}
 	
 	return array(
