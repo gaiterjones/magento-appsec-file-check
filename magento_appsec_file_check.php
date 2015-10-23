@@ -28,7 +28,13 @@ $_securityNotices=array(
 	'APPSEC-1057, template processing method allows access to private information' => array(
 		'grep' => array(
 			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/code/community/*',
-			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/code/local/*'
+			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/code/local/*',
+			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/locale/*',
+			'grep -irl "{{config path="'. ' '. $_magentoPath. 'app/design/frontend/*',
+			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/code/community/*',
+			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/code/local/*',
+			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/locale/*',
+			'grep -irl "{{block type="'. ' '. $_magentoPath. 'app/design/frontend/*'
 		),
 		'magentopath' => $_magentoPath)		
 );
