@@ -81,7 +81,7 @@ foreach ($_securityPatches as $_patchName => $_securityNotices)
 
 	}
 	
-	echo $_patchName. ' '. ($_total > 0 ? "\033[1;31m". $_total. "\033[0m". ' affected files.' : $_total. 'affected files.'). "\n";
+	echo $_patchName. ' '. ($_total > 0 ? "\033[1;31m". $_total. "\033[0m". ' affected files.' : $_total. ' affected files.'). "\n";
 }
 
 echo '***********************************'. "\n";
@@ -129,7 +129,7 @@ function doExec($_securityNotice,$_appsec)
 			
 		}
 		
-		$_text=$_text.($_count > 0 ? "\033[1;31m". $_count. "\033[0m". ' affected files : ' : $_count. 'affected files.'). "\n". $_search. "\n";
+		$_text=$_text.($_count > 0 ? "\033[1;31m". $_count. "\033[0m". ' affected files : ' :  "\033[1;32m". $_count. 'affected files.'. "\033[1;31m"). "\n". $_search. "\n";
 	}
 	
 	return array(
