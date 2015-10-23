@@ -1,5 +1,6 @@
 <?php
-
+// 0.13
+//
 // PATH TO MAGENTO ROOT
 //
 $_magentoPath='/home/www/magento/';
