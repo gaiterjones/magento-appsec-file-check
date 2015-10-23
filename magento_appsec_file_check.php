@@ -58,7 +58,7 @@ $_securityNotices=array(
 
 // EXEC
 //
-echo '*** Magento security file check ***'. "\n";
+echo '*** '. "\033[1;32m". 'Magento security file check'. "\033[0m". ' ***'. "\n";
 $_count=1;
 
 foreach ($_securityNotices as $_name => $_securityNotice)
@@ -103,7 +103,7 @@ function doExec($_securityNotice,$_name)
 				
 				foreach ($_output as $_line)
 				{
-					$_search=$_search.'['. $_name. '] '. $_searchQuery. ' found in '. "\033[31m". str_replace($_securityNotice['magentopath'],' ', $_line). "\033[0m\n";
+					$_search=$_search.'['. "\033[1;32m".  $_name. "\033[0m". '] '. $_searchQuery. ' found in '. "\033[1;31m". str_replace($_securityNotice['magentopath'],' ', $_line). "\033[0m\n";
 				}
 				
 			} else {
@@ -112,7 +112,7 @@ function doExec($_securityNotice,$_name)
 			
 		}
 		
-		$_text=$_text.$_count. ' affected files : '. "\n". $_search. "\n";
+		$_text=$_text.($_count > 0 ? "\033[1;31m". $_count. "\033[0m". ' affected files : ' : $_count. 'affected files.'). "\n". $_search. "\n";
 	}
 	
 	return $_text;
