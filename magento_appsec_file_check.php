@@ -105,6 +105,7 @@ function doExec($_securityNotice,$_appsec)
 		foreach ($_securityNotice['exec']['query'] as $_searchQuery)
 		{
 
+            $_output = array();
 			exec($_exec. $_searchQuery. ' '. $_searchPath, $_output, $_status);
 			
 			if (1 === $_status)
