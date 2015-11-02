@@ -1,12 +1,21 @@
+#!/usr/bin/php
 <?php
 // 0.13
 //
 // PATH TO MAGENTO ROOT
 //
-$_magentoPath='/home/www/magento/';
 
-if (!file_exists($_magentoPath. 'app/Mage.php')) {
-    echo 'Magento not found!'. "\n";
+if (!isset($argv[1])) {
+    cliNotice('Usage: ' . $argv[0] . ' <magento path>');
+    exit;
+}
+
+
+$_magentoPath = getcwd() . '/';
+$magePhpPath  = $_magentoPath . '/app/Mage.php';
+
+if (!file_exists($magePhpPath)) {
+    cliError(sprintf('Magento not found in "%s"!', $magePhpPath));
     exit;
 }
 
@@ -167,4 +176,20 @@ function doExec($_securityNotice, $_appsec)
 		'text' => $_text,
 		'total' => $_total
 	);
+}
+
+
+function cliError($msg)
+{
+    echo "\033[0;31m" . $msg . "\033[0m" . PHP_EOL;
+}
+
+function cliNotice($msg)
+{
+    echo "\033[0;33m" . $msg . "\033[0m" . PHP_EOL;
+}
+
+function cliSuccess($msg)
+{
+    echo "\033[0;32m" . $msg . "\033[0m" . PHP_EOL;
 }
