@@ -133,6 +133,10 @@ function doExec($_securityNotice, $_appsec)
     $_total = 0;
 
     foreach ($_securityNotice['exec']['path'] as $_searchPath) {
+        if (!is_dir($_searchPath)) {
+            cliNotice(sprintf('Path "%s" doesn\'t exist, skipping.', $_searchPath));
+            continue;
+        }
         $_text  = $_text . 'looking in ' . $_searchPath . "\n";
         $_count = 0;
         foreach ($_securityNotice['exec']['cmds'] as $_key => $_searchCommandTemplate) {
