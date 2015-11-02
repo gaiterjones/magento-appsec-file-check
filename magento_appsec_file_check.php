@@ -120,42 +120,51 @@ exit;
 
 function doExec($_securityNotice, $_appsec)
 {
-    $_text='';
-    $_total=0;
+	$_text='';
+	$_exec=$_securityNotice['exec']['cmd'];
+	$_total=0;
 
-    foreach ($_securityNotice['exec']['path'] as $_searchPath) {
-        $_text=$_text.'looking in '. $_searchPath. "\n";
-        $_count=0;
-        foreach ($_securityNotice['exec']['cmds'] as $_key => $_searchCommandTemplate) {
+	foreach ($_securityNotice['exec']['path'] as $_searchPath)
+	{
+		$_text=$_text.'looking in '. $_searchPath. "\n";
+
+		$_count=0;
+		$_search='';
+
+		foreach ($_securityNotice['exec']['query'] as $_searchQuery)
+		{
+
             $_output = array();
-            $_searchCommand = sprintf($_searchCommandTemplate, $_searchPath);
-            exec($_searchCommand, $_output, $_status);
+			exec($_exec. $_searchQuery. ' '. $_searchPath, $_output, $_status);
 
-            if (1 === $_status) {
-                $_text .= "$_key not found.\n";
-                continue;
-            }
-            if (0 === $_status) {
-                $_count += count($_output);
-                $_total += $_count;
+			if (1 === $_status)
+			{
 
-                $_text .= "{$_key} found;\033[1;31m {$_count} \033[0maffected files:\n";
-                foreach ($_output as $_line) {
-                    list($_filePath, $_match) = explode(':', $_line, 2);
-                    $_fileName = str_replace($_securityNotice['magentopath'], ' ', $_filePath);
-                    $_text .= "[\033[1;32m$_appsec\033[0m] $_match found in\033[1;31m$_fileName\033[0m\n";
-                }
-            } else {
-                $_text .= "Command $_searchCommand failed with status: $_status\n";
-            }
+				$_text=$_text.$_searchQuery. ' not found.'. "\n";
+				continue;
+			}
 
-        }
+			if (0 === $_status)
+			{
+				$_count=$_count + count($_output);
+				$_total=$_total + $_count;
 
-    }
+				foreach ($_output as $_line)
+				{
+					$_search=$_search.'['. "\033[1;32m".  $_appsec. "\033[0m". '] '. $_searchQuery. ' found in '. "\033[1;31m". str_replace($_securityNotice['magentopath'],' ', $_line). "\033[0m\n";
+				}
 
-    return array(
-        'text' => $_text,
-        'total' => $_total
-    );
+			} else {
+				$_text=$_text. 'Command '. $_securityNotice['exec']['cmd']. ' failed with status: ' . $_status. "\n";
+			}
 
+		}
+
+		$_text=$_text.($_count > 0 ? "\033[1;31m". $_count. "\033[0m". ' affected files : ' :  "\033[1;32m". $_count. ' affected files.'. "\033[0m"). "\n". $_search. "\n";
+	}
+
+	return array(
+		'text' => $_text,
+		'total' => $_total
+	);
 }
